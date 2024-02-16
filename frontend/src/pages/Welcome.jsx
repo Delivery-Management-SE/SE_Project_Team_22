@@ -8,7 +8,7 @@ const Welcome = () => {
   return (
     <div className="min-h-screen flex items-center bg-[url('./assets/background1.png')] bg-cover bg-center bg-no-repeat">
     <div className="text-3xl font-semibold text-left text-purple-700">
-      Welcome to DeliverEase, {username}!
+      Welcome, {username}!
     </div>
   </div>  
   );
