@@ -1,7 +1,14 @@
 import express from 'express';
 import mongoose from "mongoose";
 import authRoutes from './routes/auth.route.js'
-const app = express()
+import  cors from 'cors'
+const app = express();
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Use cors middleware to allow cross-origin requests
+app.use(cors());
 app.listen(3000, () => {
     console.log("Server is running on post 3000");
 });
