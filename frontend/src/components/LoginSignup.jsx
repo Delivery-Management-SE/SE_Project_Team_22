@@ -61,8 +61,8 @@
 // export default LoginSignup;
 import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import Dashboard from '../pages/Dashboard'
+import { useNavigate } from 'react-router-dom';
+import Dashboard from '../pages/Dashboard';
 
 import user_icon from '../Assets/person.png';
 import email_icon from '../Assets/email.png';
@@ -73,10 +73,18 @@ const LoginSignup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Create a navigate function
+  const [userType, setUserType] = useState('User'); // Default user type
+  const [passcode, setPasscode] = useState('');
+  const navigate = useNavigate();
   const [signedUpUsername, setSignedUpUsername] = useState('');
 
   const handleSignUp = async () => {
+    // Check if the user is signing up as Admin and validate passcode
+    if (userType === 'Admin' && passcode !== 'adminPasscode') {
+      alert('Invalid passcode for Admin signup');
+      return;
+    }
+
     const response = await fetch('http://localhost:3000/api/auth/signup', {
       method: 'POST',
       headers: {
@@ -85,17 +93,28 @@ const LoginSignup = () => {
       body: JSON.stringify({
         username,
         email,
-        password
+        password,
+        userType
       })
     });
   
     if (response.ok) {
-      setSignedUpUsername(username); // Set the signed-up username
-      navigate('/welcome', { state: { username } }); // Pass username as state
+      setSignedUpUsername(username);
+      navigate('/welcome', { state: { username } });
     } else {
-      // Handle errors
       console.error('Signup failed');
     }
+  };
+
+  const handleLogin = () => {
+    // Check if the user is logging in as Admin and validate passcode
+    if (userType === 'Admin' && passcode !== 'adminPasscode') {
+      alert('Invalid passcode for Admin login');
+      return;
+    }
+
+    // Logic for handling login
+    console.log('Login');
   };
 
   return (
@@ -122,6 +141,26 @@ const LoginSignup = () => {
             <img src={password_icon} alt="" />
             <input type="password" placeholder="Password" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
+
+          {/* Radio buttons for user type selection */}
+          <div className="flex items-center space-x-4">
+            <label>
+              <input type="radio" name="userType" value="User" checked={userType === 'User'} onChange={() => setUserType('User')} />
+              User
+            </label>
+            <label>
+              <input type="radio" name="userType" value="Admin" checked={userType === 'Admin'} onChange={() => setUserType('Admin')} />
+              Admin
+            </label>
+          </div>
+
+          {/* Passcode input for Admin signup and login */}
+          {userType === 'Admin' && (
+            <div className="input flex items-center space-x-2">
+              <img src={password_icon} alt="" />
+              <input type="password" placeholder="Admin Passcode" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" value={passcode} onChange={(e) => setPasscode(e.target.value)} />
+            </div>
+          )}
 
           {action === "Sign Up" ? (
             <div className="text-sm text-purple-500 mt-2">
@@ -150,7 +189,7 @@ const LoginSignup = () => {
             {action === "Sign Up" ? (
               <button className="submit w-full py-2 text-center rounded-lg bg-purple-600 text-white" onClick={handleSignUp}>Sign Up</button>
             ) : (
-              <button className="submit w-full py-2 text-center rounded-lg bg-purple-600 text-white" onClick={() => console.log('Login')}>Login</button>
+              <button className="submit w-full py-2 text-center rounded-lg bg-purple-600 text-white" onClick={handleLogin}>Login</button>
             )}
           </div>
 
