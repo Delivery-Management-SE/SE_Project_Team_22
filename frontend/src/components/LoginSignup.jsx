@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-<<<<<<< Updated upstream
-import { useNavigate } from 'react-router-dom';
-import Dashboard from '../pages/Dashboard';
-=======
-import Dashboard from '../pages/Dashboard';
 
->>>>>>> Stashed changes
+
 
 import user_icon from '../Assets/person.png';
 import email_icon from '../Assets/email.png';
@@ -18,7 +13,6 @@ const LoginSignup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-<<<<<<< Updated upstream
   const [userType, setUserType] = useState('User'); // Default user type
   const [passcode, setPasscode] = useState('');
   const navigate = useNavigate();
@@ -31,19 +25,6 @@ const LoginSignup = () => {
       return;
     }
 
-=======
-  const navigate = useNavigate();
-  const [userType, setUserType] = useState('User'); // State for user type selection
-
-  const generateUsername = (email) => {
-    const usernameBase = email.split('@')[0];
-    const randomNumber = Math.floor(Math.random() * 1000);
-    return `${usernameBase}${randomNumber}`;
-  };
-
-  const handleSignUp = async () => {
-    const generatedUsername = generateUsername(email);
->>>>>>> Stashed changes
     const response = await fetch('http://localhost:3000/api/auth/signup', {
       method: 'POST',
       headers: {
@@ -53,20 +34,12 @@ const LoginSignup = () => {
         username,
         email,
         password,
-<<<<<<< Updated upstream
         userType
       })
-=======
-        userType, // Make sure your backend can handle this additional field
-      }),
->>>>>>> Stashed changes
     });
 
     if (response.ok) {
-<<<<<<< Updated upstream
       setSignedUpUsername(username);
-=======
->>>>>>> Stashed changes
       navigate('/welcome', { state: { username } });
     } else {
       console.error('Signup failed');
