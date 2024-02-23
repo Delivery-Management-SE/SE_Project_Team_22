@@ -94,17 +94,7 @@ const LoginSignup = () => {
             <input type="password" placeholder="Password" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
 
-          {/* Radio buttons for user type selection */}
-          <div className="flex items-center space-x-4">
-            <label>
-              <input type="radio" name="userType" value="User" checked={userType === 'User'} onChange={() => setUserType('User')} />
-              User
-            </label>
-            <label>
-              <input type="radio" name="userType" value="Admin" checked={userType === 'Admin'} onChange={() => setUserType('Admin')} />
-              Admin
-            </label>
-          </div>
+          
 
           {/* Passcode input for Admin signup and login */}
           {userType === 'Admin' && (

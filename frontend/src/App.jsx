@@ -17,7 +17,7 @@ const App = () => {
       <GoogleOAuthProvider clientId="263174241117-n1j7q8eqn323sr1s0p3i6t637589c8um.apps.googleusercontent.com">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/" element={<LoginSignup />} />
+          <Route path="/login" element={<LoginSignup />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/reset-password" element={<ResetPassword />} /> 
