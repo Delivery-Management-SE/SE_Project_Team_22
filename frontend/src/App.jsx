@@ -9,6 +9,7 @@ import ForgotPassword from './components/ForgotPassword.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import BookingDelivery from './components/BookingDelivery.jsx';
 import HomePage from './components/HomePage.jsx';
+import UserDashboard from './components/UserDashboard.jsx';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/reset-password" element={<ResetPassword />} /> 
+          <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/book-delivery" element={<BookingDelivery />} />
           {/* Other routes */}
         </Routes>
