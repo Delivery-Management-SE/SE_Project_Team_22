@@ -5,6 +5,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './components/Header.jsx'; // Assuming you have a Header component
 import LoginSignup from './components/LoginSignup.jsx';
 import Welcome from './pages/Welcome.jsx';
+import ForgotPassword from './components/ForgotPassword.jsx';
+import ResetPassword from './components/ResetPassword.jsx';
 
 const App = () => {
   return (
@@ -14,6 +16,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LoginSignup />} />
           <Route path="/welcome" element={<Welcome />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} /> 
+          <Route path="/reset-password" element={<ResetPassword />} /> 
           {/* Other routes */}
         </Routes>
       </GoogleOAuthProvider>
