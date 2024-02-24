@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 import authRoutes from './routes/auth.route.js'
 import serviceRoutes from './routes/deliveryservice.route.js';
 import orderRouter from './routes/order.route.js'
+import cors from 'cors';
+
 const app = express();
+app.use(cors());
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
