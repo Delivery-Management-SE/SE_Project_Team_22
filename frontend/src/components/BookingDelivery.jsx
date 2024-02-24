@@ -45,6 +45,14 @@ function BookingDelivery() {
       { id: 1, name: 'USPS', rating: 4.5, deliveryTime: '2 days' },
       { id: 2, name: 'UPS', rating: 4.2, deliveryTime: '1 day' },
       { id: 3, name: 'FedEx', rating: 4.8, deliveryTime: '3 days' },
+      { id: 4, name: 'DHL Express USA', rating: 4.0, deliveryTime: '3 days' },
+      { id: 5, name: 'OnTrac', rating: 3.9, deliveryTime: '2 days' },
+      { id: 6, name: 'LaserShip', rating: 3.7, deliveryTime: '1 day' },
+      { id: 7, name: 'Amazon Logistics', rating: 4.1, deliveryTime: '2 days' },
+      { id: 8, name: 'XPO Logistics', rating: 4.3, deliveryTime: '3 days' },
+      { id: 9, name: 'Estes Express Lines', rating: 4.4, deliveryTime: '2 days' },
+      { id: 10, name: 'Old Dominion Freight Line', rating: 4.6, deliveryTime: '4 days' },
+      // Add more delivery services as needed
     ];
 
     
@@ -103,15 +111,15 @@ function BookingDelivery() {
         </section>
         <section>
           <h2 className="text-2xl font-bold mb-2">Search Results</h2>
-          <ul>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {searchResults.map((result) => (
-              <li key={result.id}>
-                <div>{result.name}</div>
-                <div>Rating: {result.rating}</div>
-                <div>Delivery Time: {result.deliveryTime}</div>
-              </li>
+              <div key={result.id} className="border border-gray-200 p-4 rounded-md">
+                <h3 className="text-xl font-semibold">{result.name}</h3>
+                <p>Rating: {result.rating}</p>
+                <p>Delivery Time: {result.deliveryTime}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
         <section>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
