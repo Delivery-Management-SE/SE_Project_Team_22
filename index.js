@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from "mongoose";
 import authRoutes from './routes/auth.route.js'
 import serviceRoutes from './routes/deliveryservice.route.js';
-
+import orderRouter from './routes/order.route.js'
 const app = express();
 
 app.listen(3000, () => {
@@ -17,6 +17,7 @@ app.get('/test' , (req,res) =>{
 
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes); /* Ismail DMS-78 */
+app.use('/api/orders', orderRouter);
 
 // app.use(express.static(path.join(__dirname, '/backend/dist')));
 

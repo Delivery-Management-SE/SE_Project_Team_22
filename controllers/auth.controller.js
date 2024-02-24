@@ -49,18 +49,20 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, 'Invalid password'));
     }
-    const token = jwt.sign(
-      { id: validUser._id, isAdmin: validUser.isAdmin },
-      process.env.JWT_SECRET
-    );
+
+    // Temporarily bypassing JWT
+    // const token = jwt.sign(
+    //   { id: validUser._id, isAdmin: validUser.isAdmin },
+    //   process.env.JWT_SECRET
+    // );
 
     const { password: pass, ...rest } = validUser._doc;
 
     res
       .status(200)
-      .cookie('access_token', token, {
-        httpOnly: true,
-      })
+      // .cookie('access_token', token, {
+      //   httpOnly: true,
+      // })
       .json(rest);
   } catch (error) {
     next(error);
@@ -109,6 +111,89 @@ export const google = async (req, res, next) => {
         })
         .json(rest);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import ResetToken from '../model/resetTokenModel.js'; // Model to store reset tokens
+
+// Step 1 & 2: Generate token and store it
+export const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    const resetToken = new ResetToken({
+      userId: user._id,
+      token: token,
+      expires: new Date(Date.now() + 3600000), // 1 hour
+    });
+    await resetToken.save();
+
+    // Step 3: Send email
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: 'deliver.ease.se.2023@gmail.com',
+    //     pass: 'MERN@2024',
+    //   },
+    // });
+
+  //   const resetUrl = `http://your-frontend-url/reset-password?token=${token}`;
+  //   const mailOptions = {
+  //     from: 'deliver.ease.se.2023@gmail.com',
+  //     to: user.email,
+  //     subject: 'Password Reset',
+  //     text: `Please click on the following link to reset your password: ${resetUrl}`,
+  //   };
+
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //       console.log(error);
+  //       return res.status(500).json({ message: 'Error sending email' });
+  //     } else {
+  //       console.log('Email sent: ' + info.response);
+  //       return res.status(200).json({ message: 'Password reset email sent' });
+  //     }
+  //   });
+  // } catch (error) {
+  //   next(error);
+  // }
+    const resetLink = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
+    console.log(`Password reset link: ${resetLink}`);
+
+        res.status(200).json({ message: 'Password reset link has been generated',resetLink });
+    } catch (error) {
+        res.status(500).json({ message: 'Error in generating password reset link', error: error.message });
+    }
+};
+
+// Step 4: Reset Password Endpoint
+export const resetPassword = async (req, res, next) => {
+  const { token, newPassword } = req.body;
+  try {
+    const resetToken = await ResetToken.findOne({ token });
+    if (!resetToken || resetToken.expires < Date.now()) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    const user = await User.findById(resetToken.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.password = newPassword; // Assume you have a pre-save hook to hash the password
+    await user.save();
+    await ResetToken.deleteOne({ token });
+
+    res.status(200).json({ message: 'Password reset successful' });
   } catch (error) {
     next(error);
   }
