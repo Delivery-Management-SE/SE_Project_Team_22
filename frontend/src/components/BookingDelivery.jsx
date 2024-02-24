@@ -52,7 +52,7 @@ function BookingDelivery() {
       { id: 8, name: 'XPO Logistics', rating: 4.3, deliveryTime: '3 days' },
       { id: 9, name: 'Estes Express Lines', rating: 4.4, deliveryTime: '2 days' },
       { id: 10, name: 'Old Dominion Freight Line', rating: 4.6, deliveryTime: '4 days' },
-      // Add more delivery services as needed
+      
     ];
 
     
