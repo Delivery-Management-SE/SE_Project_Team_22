@@ -126,6 +126,8 @@ function BookingDelivery() {
         <small>
           <a href="#" className="text-blue-500 hover:text-blue-600">Privacy Policy</a> • <a href="#" className="text-blue-500 hover:text-blue-600">Terms of Service</a>
         </small>
+        <br />
+        <Link to="/tracking" className="text-blue-500 hover:text-blue-600">Already placed an order? Track Here</Link>
       </footer>
     </div>
   );

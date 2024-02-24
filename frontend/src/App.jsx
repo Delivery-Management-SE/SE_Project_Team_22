@@ -10,7 +10,7 @@ import ForgotPassword from './components/ForgotPassword.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import BookingDelivery from './components/BookingDelivery.jsx';
 import EmployeeManagement from './components/EmployeeManagement.jsx'; 
-
+import TrackingDelivery from './components/trackingDelivery.jsx';
 const App = () => {
   return (
     <Router>
@@ -23,6 +23,7 @@ const App = () => {
           <Route path="/reset-password" element={<ResetPassword />} /> 
           <Route path="/book-delivery" element={<BookingDelivery />} />
           <Route path="/employee-management" element={<EmployeeManagement />} /> {/* Add this line */}
+          <Route path="/tracking" element={<TrackingDelivery />} />
           <Route path="/" element={<LoginSignup />} /> {/* Consider removing this line if it's unnecessary */}
           {/* Other routes */}
         </Routes>

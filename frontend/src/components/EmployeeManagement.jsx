@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link component
 
 function EmployeeManagement() {
   const [employeeData, setEmployeeData] = useState({
@@ -23,6 +24,10 @@ function EmployeeManagement() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      <nav className="mb-4">
+        {/* Add Link to Home Page */}
+        <Link to="/" className="text-blue-500 hover:text-blue-600">Home</Link>
+      </nav>
       <h2 className="text-2xl font-bold mb-4">Employee Management</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
         <div>
