@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function BookingDelivery() {
+function CustomerView() {
   const [formData, setFormData] = useState({
     pickupLocation: '',
     dropoffLocation: '',
+    itemSize: '', // New state for item size
   });
 
   const [searchParams, setSearchParams] = useState({
@@ -35,6 +36,7 @@ function BookingDelivery() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+    // Add your logic to place orders here
   };
 
   const handleSearch = (e) => {
@@ -54,16 +56,12 @@ function BookingDelivery() {
       { id: 10, name: 'Old Dominion Freight Line', rating: 4.6, deliveryTime: '4 days' },
     ];
 
-    
     let sortedResults = [];
-    if (searchParams.filter === 'smallOrders') {
-      
+    if (searchParams.filter === 'smallOrders') {      
       sortedResults = dummySearchResults.filter(result => result.name === 'USPS');
-    } else if (searchParams.filter === 'largeOrders') {
-      
+    } else if (searchParams.filter === 'largeOrders') {      
       sortedResults = dummySearchResults.filter(result => result.name === 'UPS');
-    } else {
-      
+    } else {      
       sortedResults = dummySearchResults;
     }
 
@@ -80,7 +78,6 @@ function BookingDelivery() {
           <li><Link to="/" className="text-blue-500 hover:text-blue-600">Home</Link></li>
           <li><a href="#" className="text-blue-500 hover:text-blue-600" role="button">Contact Us</a></li>
           <li><Link to="/employee-management" className="text-blue-500 hover:text-blue-600" role="button">Employee Management</Link></li>
-          <li><Link to="/customer-view" className="text-blue-500 hover:text-blue-600">Login</Link></li> {/* Added Login Link */}
         </ul>
       </nav>
       <main>
@@ -91,6 +88,12 @@ function BookingDelivery() {
               <option value="all">All Items</option>
               <option value="smallOrders">Small Orders</option>
               <option value="largeOrders">Large Orders</option>
+            </select>
+            <select name="itemSize" aria-label="Item Size" className="border-2 border-gray-200 p-2 rounded-md" value={formData.itemSize} onChange={handleChange}>
+              <option value="">Select Size</option>
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="big">Big</option>
             </select>
             <select name="deliveryService" aria-label="Delivery Service" className="border-2 border-gray-200 p-2 rounded-md" value={searchParams.deliveryService} onChange={handleSearchChange}>
               <option value="all">All Delivery Services</option>
@@ -126,7 +129,7 @@ function BookingDelivery() {
             <h2 className="text-2xl font-bold mb-2">Book Your Delivery</h2>
             <input type="text" name="pickupLocation" placeholder="Pickup Location" aria-label="Pickup Location" required className="border-2 border-gray-200 p-2 rounded-md" value={formData.pickupLocation} onChange={handleChange} />
             <input type="text" name="dropoffLocation" placeholder="Dropoff Location" aria-label="Dropoff Location" required className="border-2 border-gray-200 p-2 rounded-md" value={formData.dropoffLocation} onChange={handleChange} />
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Book Delivery</button>
+            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Place Order</button>
           </form>
         </section>
       </main>
@@ -141,4 +144,4 @@ function BookingDelivery() {
   );
 }
 
-export default BookingDelivery;
+export default CustomerView;

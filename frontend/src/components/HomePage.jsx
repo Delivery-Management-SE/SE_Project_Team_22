@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-blue-50 flex flex-col justify-center items-center">
       <h1 className="text-5xl text-blue-900 font-bold mb-4">
-        Welcome to DeliveryEase
+        Welcome to DeliverEase
       </h1>
       <p className="text-lg text-blue-700 mb-8 px-4 text-center">
         Your one-stop solution for fast and reliable delivery. Get started by booking your delivery with us.
