@@ -17,7 +17,7 @@ function EmployeeManagement() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement your submission logic here
+   
     console.log(employeeData);
   };
 

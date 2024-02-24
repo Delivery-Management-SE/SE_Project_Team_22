@@ -9,7 +9,7 @@ const HomePage = () => {
   };
 
   const navigateToLoginSignup = () => {
-    navigate('/login'); // Adjust the route as necessary
+    navigate('/login'); 
   };
 
   return (

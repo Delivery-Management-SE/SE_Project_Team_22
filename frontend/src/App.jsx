@@ -2,14 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import Header from './components/Header.jsx'; // Assuming you have a Header component
+import Header from './components/Header.jsx'; 
 import HomePage from './components/HomePage.jsx';
 import LoginSignup from './components/LoginSignup.jsx';
 import Welcome from './pages/Welcome.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
 import ResetPassword from './components/ResetPassword.jsx';
 import BookingDelivery from './components/BookingDelivery.jsx';
-import EmployeeManagement from './components/EmployeeManagement.jsx'; // Add this line
+import EmployeeManagement from './components/EmployeeManagement.jsx'; 
 
 const App = () => {
   return (

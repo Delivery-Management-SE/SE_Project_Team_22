@@ -14,6 +14,8 @@ function BookingDelivery() {
     priceRange: 'any',
   });
 
+  const [searchResults, setSearchResults] = useState([]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -33,13 +35,32 @@ function BookingDelivery() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // Implement your submission logic here
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     console.log(searchParams);
-    // Implement your search logic here
+    
+    const dummySearchResults = [
+      { id: 1, name: 'USPS', rating: 4.5, deliveryTime: '2 days' },
+      { id: 2, name: 'UPS', rating: 4.2, deliveryTime: '1 day' },
+      { id: 3, name: 'FedEx', rating: 4.8, deliveryTime: '3 days' },
+    ];
+
+    
+    let sortedResults = [];
+    if (searchParams.filter === 'smallOrders') {
+      
+      sortedResults = dummySearchResults.filter(result => result.name === 'USPS');
+    } else if (searchParams.filter === 'largeOrders') {
+      
+      sortedResults = dummySearchResults.filter(result => result.name === 'UPS');
+    } else {
+      
+      sortedResults = dummySearchResults;
+    }
+
+    setSearchResults(sortedResults);
   };
 
   return (
@@ -60,8 +81,8 @@ function BookingDelivery() {
             <input type="text" name="query" placeholder="Search delivery services..." aria-label="Search Query" className="border-2 border-gray-200 p-2 rounded-md" value={searchParams.query} onChange={handleSearchChange} />
             <select name="filter" aria-label="Filter" className="border-2 border-gray-200 p-2 rounded-md" value={searchParams.filter} onChange={handleSearchChange}>
               <option value="all">All Items</option>
-              <option value="heavyMachinery">Heavy Machinery</option>
-              <option value="delicateItems">Delicate Items</option>
+              <option value="smallOrders">Small Orders</option>
+              <option value="largeOrders">Large Orders</option>
             </select>
             <select name="deliveryService" aria-label="Delivery Service" className="border-2 border-gray-200 p-2 rounded-md" value={searchParams.deliveryService} onChange={handleSearchChange}>
               <option value="all">All Delivery Services</option>
@@ -79,6 +100,18 @@ function BookingDelivery() {
             </select>
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
           </form>
+        </section>
+        <section>
+          <h2 className="text-2xl font-bold mb-2">Search Results</h2>
+          <ul>
+            {searchResults.map((result) => (
+              <li key={result.id}>
+                <div>{result.name}</div>
+                <div>Rating: {result.rating}</div>
+                <div>Delivery Time: {result.deliveryTime}</div>
+              </li>
+            ))}
+          </ul>
         </section>
         <section>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
