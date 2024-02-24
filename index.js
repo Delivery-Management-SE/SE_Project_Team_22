@@ -1,9 +1,12 @@
 import express from 'express';
 import mongoose from "mongoose";
 import authRoutes from './routes/auth.route.js'
-const app = express()
+import serviceRoutes from './routes/deliveryservice.route.js';
+
+const app = express();
+
 app.listen(3000, () => {
-    console.log("Server is running on post 3000");
+    console.log("Server is running on port 3000");
 });
 
 mongoose.connect("mongodb+srv://test:test@blog.w3skzwn.mongodb.net/blog?retryWrites=true&w=majority")
@@ -13,6 +16,7 @@ app.get('/test' , (req,res) =>{
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/services', serviceRoutes); /* Ismail DMS-78 */
 
 // app.use(express.static(path.join(__dirname, '/backend/dist')));
 
