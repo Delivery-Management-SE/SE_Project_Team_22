@@ -8,7 +8,7 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage(null); // Reset the message
+    setMessage(null); 
 
     try {
       const response = await fetch('/api/auth/forgot-password', {

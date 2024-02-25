@@ -7,12 +7,12 @@ function TrackingDelivery() {
   const handleTrack = (e) => {
     e.preventDefault();
     
-    const status = fetchDeliveryStatusFromAPI(trackingID); // Function to fetch status from API
+    const status = fetchDeliveryStatusFromAPI(trackingID); 
     setDeliveryStatus(status);
   };
 
   const fetchDeliveryStatusFromAPI = (trackingID) => {
-    //  placeholder function to simulate fetching delivery status from an API
+   
     
     const dummyData = {
       location: 'Your Location',

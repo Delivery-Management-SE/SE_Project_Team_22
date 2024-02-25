@@ -12,6 +12,7 @@ import BookingDelivery from './components/BookingDelivery.jsx';
 import EmployeeManagement from './components/EmployeeManagement.jsx'; 
 import TrackingDelivery from './components/trackingDelivery.jsx';
 import CustomerView from './components/CustomerView.jsx';
+import OrderPayment from './components/OrderPayment.jsx';
 
 const App = () => {
   return (
@@ -27,8 +28,9 @@ const App = () => {
           <Route path="/employee-management" element={<EmployeeManagement />} /> {/* Add this line */}
           <Route path="/tracking" element={<TrackingDelivery />} />
           <Route path="/customer-view" element={<CustomerView />} />
-          <Route path="/" element={<LoginSignup />} /> {/* Consider removing this line if it's unnecessary */}
-          {/* Other routes */}
+          <Route path="/order-payment" element={<OrderPayment />} />
+          <Route path="/" element={<LoginSignup />} /> 
+          
         </Routes>
       </GoogleOAuthProvider>
     </Router>

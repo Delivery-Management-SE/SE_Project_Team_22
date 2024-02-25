@@ -5,7 +5,7 @@ function CustomerView() {
   const [formData, setFormData] = useState({
     pickupLocation: '',
     dropoffLocation: '',
-    itemSize: '', // New state for item size
+    itemSize: '', 
   });
 
   const [searchParams, setSearchParams] = useState({
@@ -36,7 +36,7 @@ function CustomerView() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // Add your logic to place orders here
+   
   };
 
   const handleSearch = (e) => {
@@ -129,7 +129,9 @@ function CustomerView() {
             <h2 className="text-2xl font-bold mb-2">Book Your Delivery</h2>
             <input type="text" name="pickupLocation" placeholder="Pickup Location" aria-label="Pickup Location" required className="border-2 border-gray-200 p-2 rounded-md" value={formData.pickupLocation} onChange={handleChange} />
             <input type="text" name="dropoffLocation" placeholder="Dropoff Location" aria-label="Dropoff Location" required className="border-2 border-gray-200 p-2 rounded-md" value={formData.dropoffLocation} onChange={handleChange} />
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Place Order</button>
+            <Link to="/order-payment">
+              <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Place Order</button>
+            </Link>
           </form>
         </section>
       </main>

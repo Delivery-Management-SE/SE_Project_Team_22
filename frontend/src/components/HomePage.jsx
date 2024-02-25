@@ -5,7 +5,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const navigateToBooking = () => {
-    navigate('/book-delivery'); // Navigates to the booking page
+    navigate('/book-delivery'); 
   };
 
   const navigateToLoginSignup = () => {

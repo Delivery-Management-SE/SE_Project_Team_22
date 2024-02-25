@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link component
+import { Link } from 'react-router-dom'; 
 
 function EmployeeManagement() {
   const [employeeData, setEmployeeData] = useState({

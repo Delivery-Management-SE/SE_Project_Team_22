@@ -11,13 +11,13 @@ const ResetPassword = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if the passwords match
+   
     if (password !== confirmPassword) {
       setMessage("Passwords don't match.");
       return;
     }
 
-    // Extract the token from the URL query parameters
+    
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get('token');
 
@@ -38,7 +38,7 @@ const ResetPassword = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage('Your password has been successfully reset.');
-        navigate('/login'); // Redirect the user to login page after reset
+        navigate('/login'); 
       } else {
         setMessage(data.message || 'An error occurred, please try again.');
       }

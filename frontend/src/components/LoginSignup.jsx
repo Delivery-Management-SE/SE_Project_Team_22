@@ -13,13 +13,13 @@ const LoginSignup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('User'); // Default user type
+  const [userType, setUserType] = useState('User'); 
   const [passcode, setPasscode] = useState('');
   const navigate = useNavigate();
   const [signedUpUsername, setSignedUpUsername] = useState('');
 
   const handleSignUp = async () => {
-    // Check if the user is signing up as Admin and validate passcode
+    
     if (userType === 'Admin' && passcode !== 'adminPasscode') {
       alert('Invalid passcode for Admin signup');
       return;
@@ -47,7 +47,7 @@ const LoginSignup = () => {
   };
 
   const handleLogin = () => {
-    // Check if the user is logging in as Admin and validate passcode
+    
     if (userType === 'Admin' && passcode !== 'adminPasscode') {
       alert('Invalid passcode for Admin login');
       return;
