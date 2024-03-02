@@ -4,15 +4,20 @@ import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, securityQuestion, securityAnswer } = req.body;
 
   if (
     !username ||
     !email ||
     !password ||
+    !securityQuestion ||
+    !securityAnswer ||
     username === '' ||
     email === '' ||
-    password === ''
+    password === '' ||
+    securityQuestion === '' ||
+    securityAnswer === ''
+
   ) {
     next(errorHandler(400, 'All fields are required'));
   }
@@ -23,6 +28,8 @@ export const signup = async (req, res, next) => {
     username,
     email,
     password: hashedPassword,
+    securityQuestion,
+    securityAnswer,
   });
 
   try {
@@ -50,23 +57,29 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, 'Invalid password'));
     }
 
+    // Send security question to the client
+    res.status(200).json({ securityQuestion: validUser.securityQuestion });
+  } catch (error) {
+    next(error);
+  }
+
     // Temporarily bypassing JWT
     // const token = jwt.sign(
     //   { id: validUser._id, isAdmin: validUser.isAdmin },
     //   process.env.JWT_SECRET
     // );
 
-    const { password: pass, ...rest } = validUser._doc;
+    //const { password: pass, ...rest } = validUser._doc;
 
-    res
-      .status(200)
+    //res
+    //  .status(200)
       // .cookie('access_token', token, {
       //   httpOnly: true,
       // })
-      .json(rest);
-  } catch (error) {
-    next(error);
-  }
+    //  .json(rest);
+ // } catch (error) {
+  //  next(error);
+ // }
 };
 
 export const google = async (req, res, next) => {
