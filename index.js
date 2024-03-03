@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.route.js'
 import serviceRoutes from './routes/deliveryservice.route.js';
 import orderRouter from './routes/order.route.js'
 import employeeRoutes from './routes/employee.route.js'; 
+import taskRoutes from './routes/task.route.js'; 
 import cors from 'cors';
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes); /* Ismail DMS-78 */
 app.use('/api/orders', orderRouter);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/tasks', taskRoutes); 
 // app.use(express.static(path.join(__dirname, '/backend/dist')));
 
 app.get('*', (req, res) => {
