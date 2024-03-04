@@ -14,6 +14,9 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    geolocation: {
+        type: String 
+    },
     orderItems: [{
         itemName: String,
         quantity: Number,
