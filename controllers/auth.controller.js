@@ -2,9 +2,13 @@ import User from '../model/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import ResetToken from '../model/resetTokenModel.js'; // Model to store reset tokens
+
 
 export const signup = async (req, res, next) => {
-  const { username, email, password, securityQuestion, securityAnswer } = req.body;
+  const { username, email, password, securityQuestion, securityAnswer ,userType } = req.body;
 
   if (
     !username ||
@@ -12,11 +16,13 @@ export const signup = async (req, res, next) => {
     !password ||
     !securityQuestion ||
     !securityAnswer ||
+    !userType ||
     username === '' ||
     email === '' ||
     password === '' ||
     securityQuestion === '' ||
-    securityAnswer === ''
+    securityAnswer === ''||
+    userType === ''
 
   ) {
     next(errorHandler(400, 'All fields are required'));
@@ -30,6 +36,7 @@ export const signup = async (req, res, next) => {
     password: hashedPassword,
     securityQuestion,
     securityAnswer,
+    userType
   });
 
   try {
@@ -58,7 +65,8 @@ export const signin = async (req, res, next) => {
     }
 
     // Send security question to the client
-    res.status(200).json({ securityQuestion: validUser.securityQuestion });
+    res.status(200).json({ securityQuestion: validUser.securityQuestion ,
+                           securityAnswer : validUser.securityAnswer   });
   } catch (error) {
     next(error);
   }
@@ -129,9 +137,6 @@ export const google = async (req, res, next) => {
   }
 };
 
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
-import ResetToken from '../model/resetTokenModel.js'; // Model to store reset tokens
 
 // Step 1 & 2: Generate token and store it
 export const forgotPassword = async (req, res, next) => {
@@ -210,4 +215,45 @@ export const resetPassword = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+
+const generateOTP = () => {
+  return Math.floor(10000 + Math.random() * 90000); // Generates a 6-digit OTP
+};
+
+export const sendOTP = async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(errorHandler(400, 'Email is required'));
+  }
+
+  const otp = generateOTP();
+  
+  // Setup Nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'bpnivedithausa@gmail.com',
+      pass: 'feiqtkvcwgqtroxc'  // Use the 16-character App Password here
+    }
+  });
+
+  const mailOptions = {
+    from: 'bpnivedithausa@gmail.com',
+    to: email,
+    subject: 'Verify your account',
+    text: `Your OTP for account verification is ${otp}`
+  };
+
+  transporter.sendMail(mailOptions, async (error, info) => {
+    if (error) {
+      return next(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+      // Sending OTP in response for testing purposes
+      res.json({ message: 'OTP sent to email', otp });
+    }
+  });
 };
