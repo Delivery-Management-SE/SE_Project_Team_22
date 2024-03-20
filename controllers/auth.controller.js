@@ -137,6 +137,26 @@ export const google = async (req, res, next) => {
   }
 };
 
+export const changePassword = async (req, res) => {
+
+  const { username, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.password = newPassword;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password changed successfully' });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Error in changing the password', error: error.message });
+  }
+};
+
 
 // Step 1 & 2: Generate token and store it
 export const forgotPassword = async (req, res, next) => {
