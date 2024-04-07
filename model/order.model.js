@@ -6,8 +6,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     deliveryService: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'DeliveryService',
+        type: String,
         required: true
     },
     deliveryAddress: {

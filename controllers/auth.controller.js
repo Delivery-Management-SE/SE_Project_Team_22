@@ -6,6 +6,9 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import ResetToken from '../model/resetTokenModel.js'; // Model to store reset tokens
 
+const SECRET_KEY = process.env.JWT_SECRET;
+const MAIL_PASS = process.env.MAIL_PASS;
+const MAIL_ID = process.env.MAIL_ID;
 
 export const signup = async (req, res, next) => {
   const { username, email, password, securityQuestion, securityAnswer ,userType } = req.body;
@@ -47,6 +50,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
+
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -55,39 +59,28 @@ export const signin = async (req, res, next) => {
   }
 
   try {
-    const validUser = await User.findOne({ email });
-    if (!validUser) {
+    const user = await User.findOne({ email });
+    if (!user) {
       return next(errorHandler(404, 'User not found'));
     }
-    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    const validPassword = bcryptjs.compareSync(password, user.password);
     if (!validPassword) {
       return next(errorHandler(400, 'Invalid password'));
     }
 
-    // Send security question to the client
-    res.status(200).json({ securityQuestion: validUser.securityQuestion ,
-                           securityAnswer : validUser.securityAnswer   });
+    // Generate JWT token
+    const token = jwt.sign(
+      { email: user.email, userType: user.userType },
+      SECRET_KEY, 
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
+    res.status(200).json({ token });
+    // res.status(200).json({ securityQuestion: validUser.securityQuestion ,
+    //   securityAnswer : validUser.securityAnswer   });
   } catch (error) {
     next(error);
   }
-
-    // Temporarily bypassing JWT
-    // const token = jwt.sign(
-    //   { id: validUser._id, isAdmin: validUser.isAdmin },
-    //   process.env.JWT_SECRET
-    // );
-
-    //const { password: pass, ...rest } = validUser._doc;
-
-    //res
-    //  .status(200)
-      // .cookie('access_token', token, {
-      //   httpOnly: true,
-      // })
-    //  .json(rest);
- // } catch (error) {
-  //  next(error);
- // }
 };
 
 export const google = async (req, res, next) => {
@@ -95,9 +88,11 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
+      // Update JWT token to include email and userType
       const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
-        process.env.JWT_SECRET
+        { email: user.email, userType: user.userType },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' } // Token expires in 1 hour
       );
       const { password, ...rest } = user._doc;
       res
@@ -118,11 +113,14 @@ export const google = async (req, res, next) => {
         email,
         password: hashedPassword,
         profilePicture: googlePhotoUrl,
+        userType: 'user', // Assign a default userType, update as needed
       });
       await newUser.save();
+      // Update JWT token to include email and userType
       const token = jwt.sign(
-        { id: newUser._id, isAdmin: newUser.isAdmin },
-        process.env.JWT_SECRET
+        { email: newUser.email, userType: newUser.userType },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' } // Token expires in 1 hour
       );
       const { password, ...rest } = newUser._doc;
       res
@@ -176,41 +174,41 @@ export const forgotPassword = async (req, res, next) => {
     await resetToken.save();
 
     // Step 3: Send email
-    // const transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   auth: {
-    //     user: 'deliver.ease.se.2023@gmail.com',
-    //     pass: 'MERN@2024',
-    //   },
-    // });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: MAIL_ID,
+        pass: MAIL_PASS,
+      },
+    });
 
-  //   const resetUrl = `http://your-frontend-url/reset-password?token=${token}`;
-  //   const mailOptions = {
-  //     from: 'deliver.ease.se.2023@gmail.com',
-  //     to: user.email,
-  //     subject: 'Password Reset',
-  //     text: `Please click on the following link to reset your password: ${resetUrl}`,
-  //   };
+    const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+    const mailOptions = {
+      from: MAIL_ID,
+      to: user.email,
+      subject: 'Password Reset',
+      text: `Please click on the following link to reset your password: ${resetUrl}`,
+    };
 
-  //   transporter.sendMail(mailOptions, (error, info) => {
-  //     if (error) {
-  //       console.log(error);
-  //       return res.status(500).json({ message: 'Error sending email' });
-  //     } else {
-  //       console.log('Email sent: ' + info.response);
-  //       return res.status(200).json({ message: 'Password reset email sent' });
-  //     }
-  //   });
-  // } catch (error) {
-  //   next(error);
-  // }
-    const resetLink = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
-    console.log(`Password reset link: ${resetLink}`);
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Error sending email' });
+      } else {
+        console.log('Email sent: ' + info.response);
+        return res.status(200).json({ message: 'Password reset email sent' });
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+    // const resetLink = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
+    // console.log(`Password reset link: ${resetLink}`);
 
-        res.status(200).json({ message: 'Password reset link has been generated',resetLink });
-    } catch (error) {
-        res.status(500).json({ message: 'Error in generating password reset link', error: error.message });
-    }
+    //     res.status(200).json({ message: 'Password reset link has been generated',resetLink });
+    // } catch (error) {
+    //     res.status(500).json({ message: 'Error in generating password reset link', error: error.message });
+    // }
 };
 
 // Step 4: Reset Password Endpoint
@@ -255,13 +253,13 @@ export const sendOTP = async (req, res, next) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'bpnivedithausa@gmail.com',
-      pass: 'feiqtkvcwgqtroxc'  // Use the 16-character App Password here
+      user: MAIL_ID,
+      pass: MAIL_PASS // Use the 16-character App Password here
     }
   });
 
   const mailOptions = {
-    from: 'bpnivedithausa@gmail.com',
+    from: MAIL_ID,
     to: email,
     subject: 'Verify your account',
     text: `Your OTP for account verification is ${otp}`
@@ -276,4 +274,22 @@ export const sendOTP = async (req, res, next) => {
       res.json({ message: 'OTP sent to email', otp });
     }
   });
+};
+
+export const completeProfile = async (req, res, next) => {
+  const { email, firstName, lastName, street, apt, zipcode, mobile } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { firstName, lastName, street, apt, zipcode, mobile },
+      { new: true }
+    );
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+    res.status(200).json({ message: 'Profile updated successfully', user });
+  } catch (error) {
+    next(error);
+  }
 };

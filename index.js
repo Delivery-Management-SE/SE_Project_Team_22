@@ -7,6 +7,7 @@ import employeeRoutes from './routes/employee.route.js';
 import taskRoutes from './routes/task.route.js'; 
 import cors from 'cors';
 
+
 const app = express();
 app.use(cors());
 

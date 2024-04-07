@@ -39,7 +39,8 @@ export const searchDeliveryServices = async (req, res) => {
                     { deliveryServiceTitle: regex },
                     { deliverServiceType: regex },
                     { deliveryServiceDescription: regex },
-                    { deliverServiceCompany: regex }
+                    { deliverServiceCompany: regex },
+                    { deliverServiceWeightLimit: regex } // Add other fields as needed
                 ]
             };
         }
@@ -50,6 +51,7 @@ export const searchDeliveryServices = async (req, res) => {
         res.status(500).json({ message: 'Error fetching delivery services', error: error.message });
     }
 };
+
 
 export const filterDeliveryServices = async (req, res) => {
     try {
@@ -66,10 +68,29 @@ export const filterDeliveryServices = async (req, res) => {
         if (req.query.minPrice && req.query.maxPrice) {
             query.deliverServicePrice = { $gte: req.query.minPrice, $lte: req.query.maxPrice };
         }
+        if (req.query.minWeight && req.query.maxWeight) {
+            query.deliverServiceWeightLimit = { $gte: req.query.minWeight, $lte: req.query.maxWeight };
+        }
 
         const deliveryServices = await DeliveryService.find(query);
         res.status(200).json(deliveryServices);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching delivery services', error: error.message });
+    }
+};
+
+
+export const deleteDeliveryServiceByTitle = async (req, res) => {
+    try {
+        const { title } = req.params;
+        const deletedService = await DeliveryService.findOneAndDelete({ deliveryServiceTitle: title });
+
+        if (!deletedService) {
+            return res.status(404).json({ message: 'Delivery service not found' });
+        }
+
+        res.status(200).json({ message: 'Delivery service deleted successfully', deletedService });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting delivery service', error: error.message });
     }
 };

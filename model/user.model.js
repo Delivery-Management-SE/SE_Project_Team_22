@@ -35,6 +35,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+  firstName: String,
+  lastName: String,
+  street: String,
+  apt: String,
+  zipcode: String,
+  mobile: String,
+
   },
   { timestamps: true }
 );
