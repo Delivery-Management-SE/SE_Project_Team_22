@@ -6,7 +6,9 @@ import orderRouter from './routes/order.route.js'
 import employeeRoutes from './routes/employee.route.js'; 
 import taskRoutes from './routes/task.route.js'; 
 import cors from 'cors';
-
+import dotenv from 'dotenv';
+dotenv.config();
+// console.log(process.env);
 
 const app = express();
 app.use(cors());
@@ -15,7 +17,7 @@ app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
 
-mongoose.connect("mongodb+srv://test:test@blog.w3skzwn.mongodb.net/blog?retryWrites=true&w=majority")
+mongoose.connect(process.env.MANGODB_CONNECTION_URL)
 app.use(express.json());
 app.get('/test' , (req,res) =>{
     res.json({message : "API"});

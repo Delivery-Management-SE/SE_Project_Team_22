@@ -6,8 +6,9 @@ import { google,
         changePassword, 
         resetPassword , 
         sendOTP ,
+        verifyOtp,
         completeProfile} from '../controllers/auth.controller.js';
-
+import verifyToken from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 
@@ -18,6 +19,7 @@ router.post('/change-password', changePassword);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/sendotp' , sendOTP)
-router.post('/updateprofile' , completeProfile)
+router.post('/verifyotp' , verifyOtp)
+router.post('/updateprofile' , verifyToken,completeProfile)
 
 export default router;

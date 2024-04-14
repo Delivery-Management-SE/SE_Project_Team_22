@@ -41,7 +41,15 @@ const userSchema = new mongoose.Schema(
   apt: String,
   zipcode: String,
   mobile: String,
-
+  mailVerified: {
+    type: String,
+    enum: ['verified', 'unverified'],
+    default: 'unverified'  // Optional: set a default value
+  },
+  otp: {
+    value: String,
+    expires: Date
+  }
   },
   { timestamps: true }
 );

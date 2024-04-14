@@ -6,10 +6,6 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import ResetToken from '../model/resetTokenModel.js'; // Model to store reset tokens
 
-const SECRET_KEY = process.env.JWT_SECRET;
-const MAIL_PASS = process.env.MAIL_PASS;
-const MAIL_ID = process.env.MAIL_ID;
-
 export const signup = async (req, res, next) => {
   const { username, email, password, securityQuestion, securityAnswer ,userType } = req.body;
 
@@ -39,7 +35,8 @@ export const signup = async (req, res, next) => {
     password: hashedPassword,
     securityQuestion,
     securityAnswer,
-    userType
+    userType,
+    mailverified : "unverified"
   });
 
   try {
@@ -52,9 +49,10 @@ export const signup = async (req, res, next) => {
 
 
 export const signin = async (req, res, next) => {
-  const { email, password } = req.body;
+  const SECRET_KEY = process.env.JWT_SECRET;
+  const { email, password , userType } = req.body;
 
-  if (!email || !password || email === '' || password === '') {
+  if (!email || !password || !userType || email === '' || password === ''|| userType ==='') {
     next(errorHandler(400, 'All fields are required'));
   }
 
@@ -67,7 +65,10 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, 'Invalid password'));
     }
-
+    if( user.mailverified == "unverified"){
+      return next(errorHandler(400 , 'unverified user'))
+    }
+    console.log(SECRET_KEY)
     // Generate JWT token
     const token = jwt.sign(
       { email: user.email, userType: user.userType },
@@ -84,6 +85,7 @@ export const signin = async (req, res, next) => {
 };
 
 export const google = async (req, res, next) => {
+
   const { email, name, googlePhotoUrl } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -114,6 +116,7 @@ export const google = async (req, res, next) => {
         password: hashedPassword,
         profilePicture: googlePhotoUrl,
         userType: 'user', // Assign a default userType, update as needed
+        mailverified :'verified'
       });
       await newUser.save();
       // Update JWT token to include email and userType
@@ -158,6 +161,8 @@ export const changePassword = async (req, res) => {
 
 // Step 1 & 2: Generate token and store it
 export const forgotPassword = async (req, res, next) => {
+const MAIL_PASS = process.env.MAIL_PASS;
+const MAIL_ID = process.env.MAIL_ID;
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -182,7 +187,7 @@ export const forgotPassword = async (req, res, next) => {
       },
     });
 
-    const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+    const resetUrl = process.env.PASSWORD_RESET_URL +'${token}';
     const mailOptions = {
       from: MAIL_ID,
       to: user.email,
@@ -241,43 +246,83 @@ const generateOTP = () => {
 };
 
 export const sendOTP = async (req, res, next) => {
+  const MAIL_PASS = process.env.MAIL_PASS;
+  const MAIL_ID = process.env.MAIL_ID;
   const { email } = req.body;
 
   if (!email) {
-    return next(errorHandler(400, 'Email is required'));
+    return next({ status: 400, message: 'Email is required' });
   }
 
   const otp = generateOTP();
-  
-  // Setup Nodemailer transporter
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: MAIL_ID,
-      pass: MAIL_PASS // Use the 16-character App Password here
-    }
-  });
+  const otpExpires = new Date();
+  otpExpires.setMinutes(otpExpires.getMinutes() + 10);  // OTP expires in 10 minutes
 
-  const mailOptions = {
-    from: MAIL_ID,
-    to: email,
-    subject: 'Verify your account',
-    text: `Your OTP for account verification is ${otp}`
-  };
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { otp: { value: otp, expires: otpExpires } },
+      { new: true, upsert: true }  // upsert true will create a new document if the user does not exist
+    );
 
-  transporter.sendMail(mailOptions, async (error, info) => {
-    if (error) {
-      return next(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-      // Sending OTP in response for testing purposes
-      res.json({ message: 'OTP sent to email', otp });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: MAIL_ID,
+        pass: MAIL_PASS
+      }
+    });
+
+    const mailOptions = {
+      from: MAIL_ID,
+      to: email,
+      subject: 'Verify your account',
+      text: `Your OTP for account verification is ${otp}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        return next({ status: 500, message: 'Failed to send OTP' });
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({ message: 'OTP sent to email successfully' });
+      }
+    });
+  } catch (error) {
+    console.error('Database error:', error);
+    next({ status: 500, message: 'Server error' });
+  }
+};
+
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-  });
+
+    // Check if OTP has expired or is incorrect
+    if (user.otp.expires < new Date() || user.otp.value !== otp) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Update the mailVerified status
+    user.mailVerified = 'verified';
+    user.otp = null; // Clear the OTP
+    await user.save();
+
+    res.status(200).json({ message: 'Email verified successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error verifying OTP' });
+  }
 };
 
 export const completeProfile = async (req, res, next) => {
-  const { email, firstName, lastName, street, apt, zipcode, mobile } = req.body;
+  const { firstName, lastName, street, apt, zipcode, mobile } = req.body;
+  const email = req.user.email; // Extracted from the token
 
   try {
     const user = await User.findOneAndUpdate(
