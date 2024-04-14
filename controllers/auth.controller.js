@@ -41,7 +41,7 @@ export const signup = async (req, res, next) => {
 
   try {
     await newUser.save();
-    res.json('Signup successful');
+    res.status(200).json('Signup successful');
   } catch (error) {
     next(error);
   }
@@ -68,7 +68,7 @@ export const signin = async (req, res, next) => {
     if( user.mailverified == "unverified"){
       return next(errorHandler(400 , 'unverified user'))
     }
-    console.log(SECRET_KEY)
+    //console.log(SECRET_KEY)
     // Generate JWT token
     const token = jwt.sign(
       { email: user.email, userType: user.userType },
@@ -86,7 +86,7 @@ export const signin = async (req, res, next) => {
 
 export const google = async (req, res, next) => {
 
-  const { email, name, googlePhotoUrl } = req.body;
+  const { username,email , profilePicture } = req.body;
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -97,12 +97,7 @@ export const google = async (req, res, next) => {
         { expiresIn: '1h' } // Token expires in 1 hour
       );
       const { password, ...rest } = user._doc;
-      res
-        .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-        })
-        .json(rest);
+      res.status(200).json({ token });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -110,11 +105,11 @@ export const google = async (req, res, next) => {
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
         username:
-          name.toLowerCase().split(' ').join('') +
+        username.toLowerCase().split(' ').join('') +
           Math.random().toString(9).slice(-4),
         email,
         password: hashedPassword,
-        profilePicture: googlePhotoUrl,
+        profilePicture: profilePicture,
         userType: 'user', // Assign a default userType, update as needed
         mailverified :'verified'
       });
@@ -126,12 +121,7 @@ export const google = async (req, res, next) => {
         { expiresIn: '1h' } // Token expires in 1 hour
       );
       const { password, ...rest } = newUser._doc;
-      res
-        .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-        })
-        .json(rest);
+      res.status(200).json({ token });
     }
   } catch (error) {
     next(error);
@@ -187,7 +177,7 @@ const MAIL_ID = process.env.MAIL_ID;
       },
     });
 
-    const resetUrl = process.env.PASSWORD_RESET_URL +'${token}';
+    const resetUrl = process.env.PASSWORD_RESET_URL + token;
     const mailOptions = {
       from: MAIL_ID,
       to: user.email,

@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
+
+# Start the Services
+# docker-compose -f redis-docker-compose.yml up -d
+
+# To stop the services:
+# docker-compose -f redis-docker-compose.yml down
+
+# To view the status of running services:
+# docker-compose -f redis-docker-compose.yml ps
+
+# To view logs:
+# docker-compose -f redis-docker-compose.yml logs
