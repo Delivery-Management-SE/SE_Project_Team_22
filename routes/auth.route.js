@@ -8,7 +8,8 @@ import { google,
         sendOTP ,
         verifyOtp,
         completeProfile,
-        getuser} from '../controllers/auth.controller.js';
+        getuser,
+        getemail} from '../controllers/auth.controller.js';
 import verifyToken from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.post('/sendotp' , sendOTP)
 router.post('/verifyotp' , verifyOtp)
 router.post('/updateprofile' , verifyToken,completeProfile)
 router.get('/profile' , verifyToken,getuser)
+router.get('/email' , verifyToken,getemail)
 
 export default router;

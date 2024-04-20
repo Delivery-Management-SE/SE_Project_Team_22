@@ -356,3 +356,7 @@ res.json(userWithoutSensitiveData);
       res.status(500).json({ message: 'Error retrieving user', error: error.message });
   }
 };
+
+export const getemail = (req,res) => {
+  res.json(req.user.email);
+}
