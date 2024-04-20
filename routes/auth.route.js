@@ -1,6 +1,16 @@
 import express from 'express';
-import { google, signin, signup, forgotPassword, changePassword, resetPassword , sendOTP} from '../controllers/auth.controller.js';
-
+import { google, 
+        signin, 
+        signup, 
+        forgotPassword, 
+        changePassword, 
+        resetPassword , 
+        sendOTP ,
+        verifyOtp,
+        completeProfile,
+        getuser,
+        getemail} from '../controllers/auth.controller.js';
+import verifyToken from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 
@@ -11,5 +21,9 @@ router.post('/change-password', changePassword);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/sendotp' , sendOTP)
+router.post('/verifyotp' , verifyOtp)
+router.post('/updateprofile' , verifyToken,completeProfile)
+router.get('/profile' , verifyToken,getuser)
+router.get('/email' , verifyToken,getemail)
 
 export default router;

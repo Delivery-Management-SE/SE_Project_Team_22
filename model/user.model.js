@@ -29,12 +29,26 @@ const userSchema = new mongoose.Schema(
 
     securityQuestion: {
       type: String,
-      required: true,
+      required: false,
     },
     securityAnswer: {
       type: String,
-      required: true,
+      required: false,
     },
+  firstName: String,
+  lastName: String,
+  street: String,
+  apt: String,
+  zipcode: String,
+  mobile: String,
+  mailVerified: {
+    type: String,
+    enum: ['verified', 'unverified']
+  },
+  otp: {
+    value: String,
+    expires: Date
+  }
   },
   { timestamps: true }
 );
