@@ -10,11 +10,11 @@ const router = express.Router();
   
 /* start Ismail DMS-78 */
 // Protect the routes with verifyToken
-router.post('/add-service', verifyToken, addDeliveryService);
-router.get('/delivery-services', verifyToken, getDeliveryServices);
+router.post('/add-service', addDeliveryService);
+router.get('/delivery-services', getDeliveryServices);
 /* end Ismail DMS-78 */
-router.get('/search', verifyToken, searchDeliveryServices);
-router.get('/filter', verifyToken, filterDeliveryServices);
+router.get('/search', searchDeliveryServices);
+router.get('/filter', filterDeliveryServices);
 router.delete('/delete-service-by-title/:title', verifyToken, deleteDeliveryServiceByTitle);
 
 

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const deliveryServiceSchema = new Schema({
   deliveryServiceTitle: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
   deliverServiceType: {
     type: String,
@@ -34,7 +35,14 @@ const deliveryServiceSchema = new Schema({
   deliverServiceLocations: [{ // Array of locations the service is available
     type: String,
     required: true
-  }]
+  }],
+  estimateddelivery:{
+    type : Number
+  },
+  image : String,
+  rating : String,
+  noppl : Number,
+  returnpolicy : String
 }, { timestamps: true });
 
 const DeliveryService = mongoose.model('DeliveryService', deliveryServiceSchema);

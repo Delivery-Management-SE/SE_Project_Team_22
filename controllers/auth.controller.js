@@ -328,3 +328,31 @@ export const completeProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getuser = async (req, res) => {
+  const email = req.user.email; // Email is retrieved from decoded token stored by verifyToken middleware
+
+  try {
+      const user = await User.findOne({ email: email });
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+// Convert to object and exclude sensitive and unnecessary data
+const userObject = user.toObject();
+const {
+    password,
+    _id,
+    userType,
+    securityQuestion,
+    securityAnswer,
+    createdAt,
+    updatedAt,
+    __v,
+    ...userWithoutSensitiveData
+} = userObject;
+
+res.json(userWithoutSensitiveData);
+  } catch (error) {
+      res.status(500).json({ message: 'Error retrieving user', error: error.message });
+  }
+};

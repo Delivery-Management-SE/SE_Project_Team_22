@@ -33,16 +33,26 @@ export const searchDeliveryServices = async (req, res) => {
         let query = {};
 
         if (searchKey) {
-            const regex = new RegExp(searchKey, 'i'); // Case-insensitive regex
+            const regex = new RegExp(searchKey, 'i'); // Case-insensitive regex for string fields
             query = {
                 $or: [
                     { deliveryServiceTitle: regex },
                     { deliverServiceType: regex },
                     { deliveryServiceDescription: regex },
-                    { deliverServiceCompany: regex },
-                    { deliverServiceWeightLimit: regex } // Add other fields as needed
+                    { deliverServiceCompany: regex }
                 ]
             };
+
+            // Check if searchKey is purely numeric and add numeric searches if so
+            if (!isNaN(searchKey)) {
+                const numericValue = Number(searchKey);
+                query.$or.push(
+                    { deliverServiceWeightLimit: numericValue },
+                    { "deliveryServiceDimensions.length": numericValue },
+                    { "deliveryServiceDimensions.width": numericValue },
+                    { "deliveryServiceDimensions.height": numericValue }
+                );
+            }
         }
 
         const deliveryServices = await DeliveryService.find(query);
@@ -51,6 +61,8 @@ export const searchDeliveryServices = async (req, res) => {
         res.status(500).json({ message: 'Error fetching delivery services', error: error.message });
     }
 };
+
+
 
 
 export const filterDeliveryServices = async (req, res) => {
