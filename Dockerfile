@@ -15,6 +15,7 @@ RUN npm ci --omit=dev
 
 # Copy the application source files from the local "src" directory to the "src" directory in the container
 COPY ./src ./src
+COPY .env .env
 # COPY ./routes ./routes
 # COPY ./controllers ./controllers
 # COPY ./model ./model
