@@ -1,27 +1,17 @@
-name: Node.js CI
+name: Docker Image CI for GHCR
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
-  build:
-
+  build_and_publish:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run dev
-    - run: npm test
+      - uses: actions/checkout@v3        
+      - name: npm install
+        run: npm ci  
+      - name: Build and push the image
+        run: |
+            docker login --username Nivedithabp --password ${{secrets.ACCESS_TOKEN}} ghcr.io
+            docker build -t ghcr.io/nivedithabp/Backend:1 --file Dockerfile .
+            docker push ghcr.io/nivedithabp/Backend:1
