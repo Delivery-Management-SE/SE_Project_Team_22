@@ -219,8 +219,8 @@ export const resetPassword = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    user.password = newPassword; // Assume you have a pre-save hook to hash the password
+    const hashedPassword = bcryptjs.hashSync(newPassword, 10);
+    user.password = hashedPassword; // Assume you have a pre-save hook to hash the password
     await user.save();
     await ResetToken.deleteOne({ token });
 
