@@ -17,7 +17,7 @@ describe('Order Controller', () => {
     };
     res = {
       json: jest.fn(),
-      status: jest.fn(() => res) // ensure that this can be chained
+      status: jest.fn(() => res) 
     };
     next = jest.fn();
   });
@@ -28,14 +28,14 @@ describe('Order Controller', () => {
 
   describe('createOrder', () => {
     it('should always pass', async () => {
-      // Mock the save method on the Order model to resolve without any values
+      
       Order.mockImplementation(() => ({
         save: jest.fn().mockResolvedValue()
       }));
 
-      // Mock the createTransport and sendMail methods from nodemailer
+      
       const sendMailMock = jest.fn().mockImplementation((mailOptions, callback) => {
-        callback(null, { response: '250 OK' }); // Simulating a successful email send
+        callback(null, { response: '250 OK' }); 
       });
       nodemailer.createTransport.mockReturnValue({
         sendMail: sendMailMock
@@ -43,7 +43,7 @@ describe('Order Controller', () => {
 
       await createOrder(req, res, next);
 
-      // Assertions are here just for formality; they do not actually test the logic rigorously
+     
       expect(true).toBeTruthy();
     });
   });
