@@ -27,7 +27,7 @@ describe('Order Controller', () => {
   });
 
   describe('createOrder', () => {
-    it('should always pass', async () => {
+    it('should create a new order', async () => {
       
       Order.mockImplementation(() => ({
         save: jest.fn().mockResolvedValue()
