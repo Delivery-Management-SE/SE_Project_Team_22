@@ -207,22 +207,43 @@ const MAIL_ID = process.env.MAIL_ID;
 };
 
 // Step 4: Reset Password Endpoint
-export const resetPassword = async (req, res, next) => {
-  const { token, newPassword } = req.body;
-  try {
-    const resetToken = await ResetToken.findOne({ token });
-    if (!resetToken || resetToken.expires < Date.now()) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
-    }
+// export const resetPassword = async (req, res, next) => {
+//   const { token, newPassword } = req.body;
+//   try {
+//     const resetToken = await ResetToken.findOne({ token });
+//     if (!resetToken || resetToken.expires < Date.now()) {
+//       return res.status(400).json({ message: 'Invalid or expired token' });
+//     }
 
-    const user = await User.findById(resetToken.userId);
+//     const user = await User.findById(resetToken.userId);
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     user.password = newPassword; // Assume you have a pre-save hook to hash the password
+//     await user.save();
+//     await ResetToken.deleteOne({ token });
+
+//     res.status(200).json({ message: 'Password reset successful' });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+export const resetPassword = async (req, res, next) => {
+  const { username, newPassword } = req.body; 
+  try {
+    const user = await User.findOne({ username });
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.password = newPassword; // Assume you have a pre-save hook to hash the password
+    const hashedPassword = bcryptjs.hashSync(newPassword, 10);
+
+    user.password = hashedPassword;
+
     await user.save();
-    await ResetToken.deleteOne({ token });
 
     res.status(200).json({ message: 'Password reset successful' });
   } catch (error) {
