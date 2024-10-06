@@ -1,11 +1,23 @@
-Implement Chat Functionality: Use WebSocket or a real-time communication library like Socket.IO in Node.js to facilitate real-time messaging.
-Database Setup: Store messages, chat sessions, and user status information from mangoDB.
-Integration with LLM and RAG:
-Use API services like OpenAI for LLM (e.g., GPT-4) and a RAG model or create a custom RAG setup by combining a document retrieval system with GPT.
-Ensure the chatbot can query the LLM/RAG to generate responses based on the chat context and retrieved external information relevant to the delivery management domain.
+DeliverEase : dynamic delivery management platform, providing streamlined shipping solutions.
 
-Retrieval Setup: For RAG, set up a retrieval system to fetch relevant data (like order details, delivery status, FAQs) from your database or external sources.
-Message Handling: On receiving a chat message that requires a response from the chatbot (e.g., a query from the customer), the backend should:
-Use the retrieval system to find relevant context or data.
-Pass the query and retrieved context to the LLM/RAG to generate a response.
-Send the generated response back through the real-time communication channel to display in the chat interface.
+Architecture 
+Frontend: Utilizes React.js for dynamic interfaces, with a focus on modular, reusable components and state management for responsive user experiences.
+Backend Service(s): Comprises Node.js and Express.js-based microservices, each handling distinct business logic and communicating via RESTful APIs or message brokers.
+Database(s): Leverages MongoDB for its flexible, document-oriented approach, facilitating scalable data management and agile development.
+Microservices: Designed for autonomy with dedicated databases, service discovery, and load balancing to ensure scalability and fault tolerance.
+
+Architecture Style: Hybrid, blending event-driven and request-response paradigms. Optimizes asynchronous operations (event-driven) and provides immediate operations feedback (request-response).
+Design Choice: Microservices architecture. Allows flexible, independent scaling and maintenance of services.
+Decoupling vs. Reuse: Favors decoupling for service autonomy and maintenance ease.
+
+
+![WhatsApp Image 2024-04-22 at 9 08 45 PM](https://github.com/user-attachments/assets/ffed7d76-f61b-4a9c-9d42-d9765811cc01)
+
+DEMO:
+
+https://github.com/user-attachments/assets/06081290-5cc4-490e-bb49-880dada0b6bf
+
+Repo Reference
+Frondend (User) :https://github.com/SETeam22/DMS_frontend 
+
+Frontend (Admin) :https://github.com/SETeam22/admin-frontend
